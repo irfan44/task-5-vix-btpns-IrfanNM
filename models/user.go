@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/irfan44/task-5-vix-btpns-IrfanNurghiffariM/helpers/hashpass"
 )
 
 type User struct {
@@ -22,4 +23,16 @@ func (u *User) Initialize() {
 	u.ID = uuid.New().String()
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
+}
+
+func (u *User) HashPassword() {
+	hashedPassword, err := hashpass.HashPassword(u.Password)
+	if err != nil {
+		panic(err)
+	}
+	u.Password = string(hashedPassword)
+}
+
+func (u *User) CheckPasswordHash(password string) bool {
+	return hashpass.CheckPasswordHash(password, u.Password)
 }

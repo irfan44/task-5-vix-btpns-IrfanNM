@@ -2,6 +2,8 @@ module github.com/irfan44/task-5-vix-btpns-IrfanNurghiffariM
 
 go 1.19
 
+require golang.org/x/crypto v0.3.0
+
 require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
