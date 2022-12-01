@@ -1,25 +1,31 @@
 package app
 
 import (
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
-	"github.com/irfan44/task-5-vix-btpns-IrfanNurghiffariM/models"
 )
 
 var jwtKey = []byte("my_secret_key")
 
-func GenerateToken(user models.User) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": user.Username,
-		"email":    user.Email,
-		"id":       user.ID,
-	})
+type JWTClaim struct {
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	jwt.StandardClaims
+}
 
-	tokenString, err := token.SignedString(jwtKey)
-	if err != nil {
-		return "", err
+func GenerateToken(email string, username string) (tokenString string, err error) {
+	expirationTime := time.Now().Add(1 * time.Hour)
+	claims := &JWTClaim{
+		Email:    email,
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
 	}
-
-	return tokenString, nil
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err = token.SignedString(jwtKey)
+	return
 }
 
 func ValidateToken(tokenString string) (*jwt.Token, error) {
